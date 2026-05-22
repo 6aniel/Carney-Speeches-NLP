@@ -1,2 +1,2 @@
-# NLP-Project-1-
+# NLP-Project-1
 personal project in the works...
