@@ -8,7 +8,9 @@ The goal is to provide a readable recap of the core themes in Carney's public rh
 
 Start here:
 
+- Live report: https://6aniel.github.io/NLP-Project-1/
 - `carney_first_year_report.qmd` - polished reader-facing Quarto report
+- `index.html` - rendered GitHub Pages version of the report
 - `NLP_draft1.qmd` - technical notebook with scraping and modeling proof-of-work
 
 The public report covers:
