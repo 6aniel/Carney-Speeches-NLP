@@ -89,17 +89,6 @@ quarto render NLP_draft1.qmd
 ├── NLP-Project-1.Rproj
 └── README.md
 ```
-
-## Publishing Notes
-
-For GitHub, this repository can serve two audiences:
-
-- The README explains the project at a high level.
-- The Quarto report presents the public-facing analysis.
-- The draft notebook preserves the technical trail behind the data collection and modeling.
-
-For a simple public page, render `carney_first_year_report.qmd` to HTML and publish the HTML with GitHub Pages or Quarto Pub.
-
 ## Limitations
 
 This analysis only uses official speeches from one source. It does not include interviews, parliamentary debate, social media, press coverage, opposition responses, or policy outcomes. Topic modeling is exploratory, and the selected number of topics affects the results.
