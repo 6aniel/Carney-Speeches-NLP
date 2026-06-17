@@ -19,6 +19,12 @@ library(stm)
 library(reshape2)
 ```
 
+```{r}
+custom_stop_words <- tibble(
+  word = c("canada", "build")
+)
+```
+
 ## Loading Data
 
 ```{r}
@@ -165,7 +171,8 @@ word_counts_grouped_by_speech <- carney_speeches |>
     word %in% c("homes", "housing") ~ "home",
     TRUE ~ word
   )) |>
-count(doc_id, word, sort = TRUE)
+  anti_join(custom_stop_words, by = "word") |>
+  count(doc_id, word, sort = TRUE)
 
 speech_dtm <- word_counts_grouped_by_speech |>
   cast_dtm(document = doc_id, term = word, value = n)
@@ -180,7 +187,6 @@ carney_speeches_lda <- LDA(speech_dtm, k = 4, control = list(seed = 712))
 
 ```
 
-## 
 ```{r}
 carney_topics <- tidy(carney_speeches_lda, matrix = "beta")
 carney_topics
@@ -193,15 +199,32 @@ carney_top_topics <- carney_topics |>
   ungroup() |>
   arrange(topic, -beta)
 
-carney_top_topics %>%
-  mutate(term = reorder_within(term, beta, topic)) %>%
-  ggplot(aes(beta, term, fill = factor(topic))) +
+topic_name_suggestions <- tibble(
+  topic = 1:4,
+  suggested_name = c(
+    "Housing, Infrastructure, and Economy",
+    "National Security and Sovereignty",
+    "Defence, Trade, and Global Partnerships",
+    "AI, Communities, and Major Projects"
+  )
+)
+
+carney_top_topics_named <- carney_top_topics |>
+  left_join(topic_name_suggestions, by = "topic") |>
+  mutate(topic_label = str_c("Topic ", topic, ": ", suggested_name))
+
+topic_name_suggestions |>
+  left_join(
+    carney_top_topics |>
+      group_by(topic) |>
+      summarise(top_terms = str_c(term, collapse = ", "), .groups = "drop"),
+    by = "topic"
+  )
+
+carney_top_topics_named %>%
+  mutate(term = reorder_within(term, beta, topic_label)) %>%
+  ggplot(aes(beta, term, fill = factor(topic_label))) +
   geom_col(show.legend = FALSE) +
-  facet_wrap(~ topic, scales = "free") +
+  facet_wrap(~ topic_label, scales = "free") +
   scale_y_reordered()
-
 ```
-
-## Notes
--   "Canada" and "Build" dominate every topic
-
